@@ -1,0 +1,46 @@
+CREATE TABLE genre (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(80) NOT NULL
+);
+
+CREATE TABLE musician (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(80) NOT NULL
+);
+
+CREATE TABLE album (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(80) NOT NULL,
+	release_year INTEGER CHECK(release_year <= DATE_PART('YEAR', CURRENT_TIMESTAMP)::INTEGER)
+);
+
+CREATE TABLE track (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(80) NOT NULL,
+	duration time(2) NOT NULL,
+	album_id INTEGER REFERENCES album(id)
+);
+
+CREATE TABLE collection (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(80) NOT NULL,
+	release_year INTEGER CHECK(release_year <= DATE_PART('YEAR', CURRENT_TIMESTAMP)::INTEGER)
+);
+
+CREATE TABLE collection_track (
+	collection_id INTEGER REFERENCES collection(id),
+	track_id INTEGER REFERENCES track(id),
+	CONSTRAINT pk PRIMARY KEY (collection_id, track_id)
+);
+
+CREATE TABLE genre_musician (
+	genre_id INTEGER REFERENCES genre(id),
+	musician_id INTEGER REFERENCES musician(id),
+	CONSTRAINT pk PRIMARY KEY (genre_id, musician_id)
+);
+
+CREATE TABLE album_musician (
+	album_id INTEGER REFERENCES album(id),
+	musician_id INTEGER REFERENCES musician(id),
+	CONSTRAINT pk PRIMARY KEY (album_id, musician_id)
+);
